@@ -84,21 +84,17 @@
         <h2 class="text-3xl font-semibold text-gray-800 mb-6">Merge Sort Code</h2>
         <div id="code" class="border p-4 rounded-lg">
           <pre id="code-block">function mergeSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
+  if (arr.length <= 1) return arr;
 
-  const mid = Math.floor(arr.length / 2);
-  const left = arr.slice(0, mid);
-  const right = arr.slice(mid);
+  let mid = Math.floor(arr.length / 2);
+  let left = mergeSort(arr.slice(0, mid));
+  let right = mergeSort(arr.slice(mid));
 
-  return merge(mergeSort(left), mergeSort(right));
+  return merge(left, right);
 }
 
 function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
+  let result = [], leftIndex = 0, rightIndex = 0;
 
   while (leftIndex < left.length && rightIndex < right.length) {
     if (left[leftIndex] < right[rightIndex]) {
@@ -110,7 +106,7 @@ function merge(left, right) {
     }
   }
 
-  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  return result.concat(left.slice(leftIndex), right.slice(rightIndex));
 }</pre>
         </div>
       </div>
@@ -229,43 +225,28 @@ function merge(left, right) {
 
     // Merge Sort function with detailed explanation
     function mergeSort(arr) {
-      if (arr.length <= 1) {
-        return arr;
-      }
+      if (arr.length <= 1) return arr;
 
-      const mid = Math.floor(arr.length / 2);
-      const left = arr.slice(0, mid);
-      const right = arr.slice(mid);
+      let mid = Math.floor(arr.length / 2);
+      let left = mergeSort(arr.slice(0, mid));
+      let right = mergeSort(arr.slice(mid));
 
       setTimeout(() => {
-        showCurrentExplanation(`Dividing array into: [${left.join(", ")}] and [${right.join(", ")}]`);
-        addExplanation(`Dividing: [${arr.join(", ")}] into [${left.join(", ")}] and [${right.join(", ")}]`);
+        addExplanation(`Dividing the array: ${arr.join(", ")}`);
         displayArray();
-      }, stepCount * 1000);
+      }, stepCount * 1500);
 
       stepCount++;
 
-      mergeSort(left);
-      mergeSort(right);
-
-      setTimeout(() => {
-        let merged = merge(left, right);
-        arr = merged;
-        displayArray();
-        showCurrentExplanation(`Merging: [${left.join(", ")}] and [${right.join(", ")}] -> [${merged.join(", ")}]`);
-        addExplanation(`Merged: [${left.join(", ")}] and [${right.join(", ")}] -> [${merged.join(", ")}]`);
-      }, stepCount * 1000);
-
-      stepCount++;
+      return merge(left, right);
     }
 
-    // Merge function to combine two halves
     function merge(left, right) {
-      let result = [];
-      let leftIndex = 0;
-      let rightIndex = 0;
+      let result = [], leftIndex = 0, rightIndex = 0;
 
       while (leftIndex < left.length && rightIndex < right.length) {
+        let bars = document.getElementsByClassName("array-bar");
+
         if (left[leftIndex] < right[rightIndex]) {
           result.push(left[leftIndex]);
           leftIndex++;
@@ -273,9 +254,17 @@ function merge(left, right) {
           result.push(right[rightIndex]);
           rightIndex++;
         }
+
+        setTimeout(() => {
+          showCurrentExplanation(`Merging arrays: Left: ${left}, Right: ${right}`);
+          addExplanation(`Merging: Left: ${left}, Right: ${right}`);
+          displayArray();
+        }, stepCount * 1500);
+
+        stepCount++;
       }
 
-      return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+      return result.concat(left.slice(leftIndex), right.slice(rightIndex));
     }
   </script>
 
