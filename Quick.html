@@ -85,22 +85,27 @@
         <div id="code" class="border p-4 rounded-lg">
           <pre id="code-block">function quickSort(arr, low, high) {
   if (low < high) {
-    let pivotIndex = partition(arr, low, high);
-    quickSort(arr, low, pivotIndex - 1);
-    quickSort(arr, pivotIndex + 1, high);
+    let pi = partition(arr, low, high);
+    quickSort(arr, low, pi - 1); // Before pi
+    quickSort(arr, pi + 1, high); // After pi
   }
 }
 
 function partition(arr, low, high) {
   let pivot = arr[high];
-  let i = low - 1;
+  let i = (low - 1);
+  
   for (let j = low; j < high; j++) {
-    if (arr[j] <= pivot) {
+    if (arr[j] < pivot) {
       i++;
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+      let temp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = temp;
     }
   }
-  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+  let temp = arr[i + 1];
+  arr[i + 1] = arr[high];
+  arr[high] = temp;
   return i + 1;
 }</pre>
         </div>
@@ -221,50 +226,52 @@ function partition(arr, low, high) {
     // Quick Sort function with detailed explanation
     function quickSort(arr, low, high) {
       if (low < high) {
-        let pivotIndex = partition(arr, low, high);
-        displayArray();
+        let pi = partition(arr, low, high);
 
         setTimeout(() => {
-          showCurrentExplanation(`Pivot is ${arr[pivotIndex]} at index ${pivotIndex}`);
-          addExplanation(`Pivot chosen: ${arr[pivotIndex]} at index ${pivotIndex}`);
-        }, stepCount * 1000);
-
-        stepCount++;
-
-        quickSort(arr, low, pivotIndex - 1);
-        quickSort(arr, pivotIndex + 1, high);
-      } else {
-        if (low === high) {
+          addExplanation(`Pivot is ${arr[pi]} at index ${pi}`);
+          showCurrentExplanation(`Pivot is ${arr[pi]} at index ${pi}`);
           displayArray();
-        }
-      }
-    }
-
-    // Partition function to divide the array around the pivot
-    function partition(arr, low, high) {
-      let pivot = arr[high];
-      let i = low - 1;
-      for (let j = low; j < high; j++) {
-        let bars = document.getElementsByClassName("array-bar");
-
-        // Highlight the bars being compared
-        bars[j].classList.add("highlight");
-
-        // Explain the comparison step
-        setTimeout(() => {
-          showCurrentExplanation(`Comparing ${arr[j]} with pivot ${pivot}`);
-          if (arr[j] <= pivot) {
-            i++;
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-            displayArray();
-          }
         }, stepCount * 1500);
 
         stepCount++;
+
+        quickSort(arr, low, pi - 1); // Before pivot
+        quickSort(arr, pi + 1, high); // After pivot
+      }
+    }
+
+    // Partition function with detailed explanation
+    function partition(arr, low, high) {
+      let pivot = arr[high];
+      let i = low - 1;
+
+      for (let j = low; j < high; j++) {
+        let bars = document.getElementsByClassName("array-bar");
+
+        if (arr[j] < pivot) {
+          i++;
+          let temp = arr[i];
+          arr[i] = arr[j];
+          arr[j] = temp;
+
+          // Highlight the bars being swapped
+          setTimeout(() => {
+            bars[i].classList.add("highlight");
+            bars[j].classList.add("highlight");
+            addExplanation(`Swapping ${arr[i]} and ${arr[j]}`);
+            showCurrentExplanation(`Swapping ${arr[i]} and ${arr[j]}`);
+            displayArray();
+          }, stepCount * 1500);
+
+          stepCount++;
+        }
       }
 
-      [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
-      displayArray();
+      let temp = arr[i + 1];
+      arr[i + 1] = arr[high];
+      arr[high] = temp;
+
       return i + 1;
     }
   </script>
