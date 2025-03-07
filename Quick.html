@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Sort Visualization</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .array-bar-container {
+      display: inline-block;
+      text-align: center;
+      margin: 0 5px;
+    }
+    .array-bar {
+      display: inline-block;
+      width: 30px;
+      background-color: lightblue;
+      transition: height 0.3s ease-in-out;
+    }
+    .highlight {
+      background-color: red !important;
+    }
+    .number-label {
+      display: block;
+      margin-top: 5px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    #code {
+      background-color: #f4f4f4;
+      padding: 20px;
+      border-radius: 5px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    #result {
+      margin-top: 20px;
+    }
+    #explanation {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+    #previous-explanation {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Header Section -->
+  <header class="bg-blue-600 text-white p-6">
+    <div class="max-w-screen-xl mx-auto flex justify-between items-center">
+      <h1 class="text-4xl font-bold">AlgoVisual</h1>
+      <nav class="flex space-x-6 text-lg">
+        <a href="index.html" class="hover:text-yellow-400">Home</a>
+        <a href="bubble-sort.html" class="hover:text-yellow-400">Bubble Sort</a>
+        <a href="quick-sort.html" class="hover:text-yellow-400">Quick Sort</a>
+        <a href="merge-sort.html" class="hover:text-yellow-400">Merge Sort</a>
+        <a href="insertion-sort.html" class="hover:text-yellow-400">Insertion Sort</a>
+        <a href="selection-sort.html" class="hover:text-yellow-400">Selection Sort</a>
+        <a href="heap-sort.html" class="hover:text-yellow-400">Heap Sort</a>
+        <a href="radix-sort.html" class="hover:text-yellow-400">Radix Sort</a>
+        <a href="shell-sort.html" class="hover:text-yellow-400">Shell Sort</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="py-12">
+    <section class="max-w-screen-xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Code Section -->
+      <div class="lg:col-span-1">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Quick Sort Code</h2>
+        <div id="code" class="border p-4 rounded-lg">
+          <pre id="code-block">function quickSort(arr, low, high) {
+  if (low < high) {
+    let pivotIndex = partition(arr, low, high);
+    quickSort(arr, low, pivotIndex - 1);
+    quickSort(arr, pivotIndex + 1, high);
+  }
+}
+
+function partition(arr, low, high) {
+  let pivot = arr[high];
+  let i = low - 1;
+  for (let j = low; j < high; j++) {
+    if (arr[j] <= pivot) {
+      i++;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+  [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+  return i + 1;
+}</pre>
+        </div>
+      </div>
+
+      <!-- Visualization Section -->
+      <div class="lg:col-span-1">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Quick Sort Visualization</h2>
+        <p class="text-lg text-gray-600 mb-8">Enter the array elements below and watch Quick Sort sort them step by step.</p>
+
+        <!-- Input for array size -->
+        <div>
+          <label for="array-size" class="text-lg">Array Size: </label>
+          <input type="number" id="array-size" class="border p-2 rounded" min="2" max="20" value="5">
+        </div>
+        <br>
+
+        <!-- Input for array elements -->
+        <div>
+          <label for="array-elements" class="text-lg">Enter Array Elements (comma separated): </label>
+          <input type="text" id="array-elements" class="border p-2 rounded" placeholder="e.g., 3,1,4,2,5">
+        </div>
+        <br>
+
+        <!-- Start button -->
+        <button onclick="startQuickSort()" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+          Start Quick Sort
+        </button>
+
+        <div id="array-container" class="mt-6 mb-6"></div>
+        <div id="result" class="text-xl font-semibold text-gray-800 mt-6"></div>
+
+        <!-- Explanation Boxes -->
+        <div id="current-explanation" class="text-lg text-gray-800 mt-6"></div>
+        <div id="previous-explanation" class="text-lg text-gray-800 mt-6"></div> <!-- Previous Explanations -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="bg-gray-800 text-white p-6">
+    <div class="max-w-screen-xl mx-auto text-center">
+      <p>&copy; 2025 AlgoVisual | All rights reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    let arr = [];
+    let stepCount = 1;
+    let explanationHistory = []; // Store previous explanations
+
+    // Function to display the array with bars and numbers below them
+    function displayArray() {
+      let container = document.getElementById("array-container");
+      container.innerHTML = ""; // Clear the container before re-rendering
+
+      arr.forEach(num => {
+        let barContainer = document.createElement("div");
+        barContainer.classList.add("array-bar-container");
+
+        let bar = document.createElement("div");
+        bar.classList.add("array-bar");
+        bar.style.height = `${num * 20}px`;
+
+        let numberLabel = document.createElement("span");
+        numberLabel.classList.add("number-label");
+        numberLabel.innerText = num;
+
+        barContainer.appendChild(bar);
+        barContainer.appendChild(numberLabel);
+
+        container.appendChild(barContainer);
+      });
+    }
+
+    // Function to show the current explanation
+    function showCurrentExplanation(message) {
+      document.getElementById("current-explanation").innerHTML = `<strong>Step ${stepCount}:</strong> ${message}`;
+    }
+
+    // Function to show the list of previous explanations
+    function showPreviousExplanations() {
+      const prevExplanationsContainer = document.getElementById("previous-explanation");
+      prevExplanationsContainer.innerHTML = "<strong>Previous Steps:</strong>";
+      explanationHistory.forEach((explanation, index) => {
+        const p = document.createElement("p");
+        p.innerHTML = `<strong>Step ${index + 1}:</strong> ${explanation}`;
+        prevExplanationsContainer.appendChild(p);
+      });
+    }
+
+    // Function to add explanation to history and update UI
+    function addExplanation(message) {
+      explanationHistory.push(message);
+      showPreviousExplanations(); // Update previous explanations list
+    }
+
+    // Function to start the quick sort process
+    function startQuickSort() {
+      let input = document.getElementById("array-elements").value;
+      let size = parseInt(document.getElementById("array-size").value);
+
+      // Parse the input array
+      arr = input.split(",").map(num => parseInt(num.trim()));
+
+      if (arr.length !== size) {
+        alert("Array size doesn't match the entered elements!");
+        return;
+      }
+
+      // Reset the explanation section and display the initial array
+      explanationHistory = [];
+      displayArray();
+      showPreviousExplanations();
+      quickSort(arr, 0, arr.length - 1);
+    }
+
+    // Quick Sort function with detailed explanation
+    function quickSort(arr, low, high) {
+      if (low < high) {
+        let pivotIndex = partition(arr, low, high);
+        displayArray();
+
+        setTimeout(() => {
+          showCurrentExplanation(`Pivot is ${arr[pivotIndex]} at index ${pivotIndex}`);
+          addExplanation(`Pivot chosen: ${arr[pivotIndex]} at index ${pivotIndex}`);
+        }, stepCount * 1000);
+
+        stepCount++;
+
+        quickSort(arr, low, pivotIndex - 1);
+        quickSort(arr, pivotIndex + 1, high);
+      } else {
+        if (low === high) {
+          displayArray();
+        }
+      }
+    }
+
+    // Partition function to divide the array around the pivot
+    function partition(arr, low, high) {
+      let pivot = arr[high];
+      let i = low - 1;
+      for (let j = low; j < high; j++) {
+        let bars = document.getElementsByClassName("array-bar");
+
+        // Highlight the bars being compared
+        bars[j].classList.add("highlight");
+
+        // Explain the comparison step
+        setTimeout(() => {
+          showCurrentExplanation(`Comparing ${arr[j]} with pivot ${pivot}`);
+          if (arr[j] <= pivot) {
+            i++;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+            displayArray();
+          }
+        }, stepCount * 1500);
+
+        stepCount++;
+      }
+
+      [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+      displayArray();
+      return i + 1;
+    }
+  </script>
+
+</body>
+</html>
