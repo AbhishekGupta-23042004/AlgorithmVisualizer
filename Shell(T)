@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shell Sort Theory</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #2563EB;
+      animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .section-box {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: fadeUp 1s forwards;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes fadeUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-header {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 10px;
+      transition: color 0.3s ease;
+    }
+
+    .section-header:hover {
+      color: #2563EB;
+    }
+
+    .section-content {
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .list-disc {
+      margin-left: 1.5rem;
+    }
+
+    .code-box {
+      background-color: #f4f4f4;
+      padding: 15px;
+      border-radius: 5px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+    }
+
+    .code-box:hover {
+      background-color: #e0e0e0;
+    }
+
+    .highlight {
+      background-color: #ffcc00;
+    }
+
+    .home-button {
+      border: 2px solid #ffffff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 500;
+      background-color: transparent;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .home-button:hover {
+      background-color: #f0f0f0;
+      color: #2563EB;
+    }
+
+    .section-content li:hover {
+      background-color: #f0f0f0;
+      padding: 5px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 100px;
+      padding: 0 10px;
+    }
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: white;
+      margin: 0;
+    }
+
+    nav {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    @media (max-width: 640px) {
+      .section-header {
+        font-size: 1.25rem;
+      }
+
+      .section-content {
+        font-size: 0.95rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .section-box {
+        padding: 15px;
+      }
+
+      .home-button {
+        padding: 8px 16px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .section-header {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans">
+
+  <!-- Header Section -->
+  <header class="bg-blue-600 text-white p-6">
+    <div class="max-w-screen-xl mx-auto w-full flex justify-center items-center relative">
+      <h1 class="text-4xl font-bold">AlgoVisual</h1>
+      <nav class="flex space-x-6 text-lg absolute right-10 top-1/2 transform -translate-y-1/2">
+        <a href="index.html" class="home-button">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="py-12">
+    <section class="max-w-screen-xl mx-auto px-6">
+
+      <!-- What is Shell Sort -->
+      <div class="section-box">
+        <h2 class="section-header">What is Shell Sort?</h2>
+        <p class="section-content">
+          Shell Sort is an in-place comparison-based sorting algorithm that generalizes insertion sort to allow the exchange of items that are far apart. The idea is to arrange the list of elements so that, starting anywhere, taking every <strong>h</strong>th element produces a sorted list. The value of <strong>h</strong> is gradually reduced until it becomes 1, at which point the algorithm performs an ordinary insertion sort.
+        </p>
+      </div>
+
+      <!-- How Shell Sort Works -->
+      <div class="section-box">
+        <h2 class="section-header">How does Shell Sort work?</h2>
+        <ol class="section-content list-disc">
+          <li><strong>Step 1:</strong> Choose an initial gap sequence (e.g., halve the gap each time, starting from the size of the array).</li>
+          <li><strong>Step 2:</strong> Sort the elements that are <strong>gap</strong> distance apart using insertion sort.</li>
+          <li><strong>Step 3:</strong> Reduce the gap and repeat the sorting process.</li>
+          <li><strong>Step 4:</strong> Continue reducing the gap until it becomes 1, and a final insertion sort is applied.</li>
+        </ol>
+      </div>
+
+      <!-- Time Complexity -->
+      <div class="section-box">
+        <h2 class="section-header">Time Complexity of Shell Sort</h2>
+        <p class="section-content">
+          The time complexity of Shell Sort depends on the choice of gap sequence. The best-case time complexity is O(n log n), but it can vary significantly based on the gap sequence used:
+        </p>
+        <ul class="section-content list-disc">
+          <li><strong>Best case:</strong> O(n log n) – when a good gap sequence is used.</li>
+          <li><strong>Average case:</strong> O(n^(3/2)) – the complexity can vary.</li>
+          <li><strong>Worst case:</strong> O(n^2) – for a poor gap sequence, the time complexity may approach that of a basic insertion sort.</li>
+        </ul>
+      </div>
+
+      <!-- Advantages -->
+      <div class="section-box">
+        <h2 class="section-header">Advantages of Shell Sort</h2>
+        <ul class="section-content list-disc">
+          <li>It is more efficient than insertion sort for larger datasets.</li>
+          <li>Shell Sort does not require additional memory, as it is an in-place sorting algorithm.</li>
+          <li>It is simple to implement and can perform well on moderately sized arrays.</li>
+        </ul>
+      </div>
+
+      <!-- Disadvantages -->
+      <div class="section-box">
+        <h2 class="section-header">Disadvantages of Shell Sort</h2>
+        <ul class="section-content list-disc">
+          <li>The choice of gap sequence greatly affects performance.</li>
+          <li>It is not as efficient as more advanced algorithms such as Quick Sort or Merge Sort.</li>
+          <li>The algorithm is not stable, meaning that the relative order of equal elements may not be preserved.</li>
+        </ul>
+      </div>
+
+      <!-- Applications -->
+      <div class="section-box">
+        <h2 class="section-header">Applications of Shell Sort</h2>
+        <ul class="section-content list-disc">
+          <li>Used when a quick sorting algorithm with moderate space complexity is needed.</li>
+          <li>Effective for small to medium-sized datasets where insertion sort would be too slow.</li>
+          <li>Used in applications where low overhead and simplicity are more important than absolute performance.</li>
+        </ul>
+      </div>
+
+      <!-- Example -->
+      <div class="section-box">
+        <h2 class="section-header">Shell Sort Example</h2>
+        <div class="section-content">
+          <p>Consider the array: <code>[5, 2, 9, 1, 5, 6]</code></p>
+          <p>Step-by-step sorting (using gap sequence [3, 1]):</p>
+          <ul class="list-disc pl-6">
+            <li>Pass 1 (gap = 3): <code>[5, 2, 9, 1, 5, 6] → [1, 2, 9, 5, 5, 6]</code></li>
+            <li>Pass 2 (gap = 1): <code>[1, 2, 9, 5, 5, 6] → [1, 2, 5, 5, 6, 9]</code></li>
+          </ul>
+          <p>Final sorted array: <code>[1, 2, 5, 5, 6, 9]</code></p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="bg-blue-600 text-white p-6">
+    <div class="max-w-screen-xl mx-auto text-center">
+      <p>&copy; 2025 AlgoVisual | All rights reserved</p>
+    </div>
+  </footer>
+
+</body>
+</html>
