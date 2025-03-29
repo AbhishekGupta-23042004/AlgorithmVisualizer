@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bubble Sort Theory</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .array-bar-container {
+      display: inline-block;
+      text-align: center;
+      margin: 0 5px;
+    }
+    .array-bar {
+      display: inline-block;
+      width: 30px;
+      background-color: lightblue;
+      transition: height 0.3s ease-in-out;
+    }
+    .highlight {
+      background-color: red !important;
+    }
+    .number-label {
+      display: block;
+      margin-top: 5px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    #code {
+      background-color: #f4f4f4;
+      padding: 20px;
+      border-radius: 5px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    #explanation {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+    #previous-explanation {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <!-- Header Section -->
+  <header class="bg-blue-600 text-white p-6">
+    <div class="max-w-screen-xl mx-auto flex justify-between items-center">
+      <h1 class="text-4xl font-bold">AlgoVisual</h1>
+      <nav class="flex space-x-6 text-lg">
+        <a href="index.html" class="hover:text-yellow-400">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="py-12">
+    <section class="max-w-screen-xl mx-auto px-6">
+      <h2 class="text-3xl font-semibold text-gray-800 mb-6">What is Bubble Sort?</h2>
+      <p class="text-lg text-gray-600 mb-8">
+        Bubble Sort is a simple sorting algorithm that repeatedly steps through the list to be sorted,
+        compares each pair of adjacent items and swaps them if they are in the wrong order. The pass through
+        the list is repeated until the list is sorted.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mb-4">How does Bubble Sort work?</h3>
+      <ol class="text-lg text-gray-600 mb-8 space-y-4">
+        <li><strong>Step 1:</strong> Compare the first two elements in the array.</li>
+        <li><strong>Step 2:</strong> If the first element is larger than the second element, swap them.</li>
+        <li><strong>Step 3:</strong> Move to the next pair and repeat the process until the end of the array is reached.</li>
+        <li><strong>Step 4:</strong> After each pass, the largest element "bubbles up" to its correct position.</li>
+        <li><strong>Step 5:</strong> Repeat the process until no more swaps are needed (array is sorted).</li>
+      </ol>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mb-4">Time Complexity of Bubble Sort</h3>
+      <p class="text-lg text-gray-600 mb-8">
+        The time complexity of Bubble Sort is as follows:
+      </p>
+      <ul class="list-disc text-lg text-gray-600 mb-8 pl-6">
+        <li><strong>Best case:</strong> O(n) - When the array is already sorted.</li>
+        <li><strong>Average case:</strong> O(n^2) - When the array is unsorted.</li>
+        <li><strong>Worst case:</strong> O(n^2) - When the array is in reverse order.</li>
+      </ul>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mb-4">Advantages of Bubble Sort</h3>
+      <ul class="list-disc text-lg text-gray-600 mb-8 pl-6">
+        <li>Simple and easy to understand.</li>
+        <li>In-place sorting algorithm (does not require additional memory).</li>
+        <li>Can detect whether the array is already sorted.</li>
+      </ul>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mb-4">Disadvantages of Bubble Sort</h3>
+      <ul class="list-disc text-lg text-gray-600 mb-8 pl-6">
+        <li>Time complexity is O(n^2) in the average and worst cases, making it inefficient for large datasets.</li>
+        <li>Not suitable for large arrays due to poor performance.</li>
+      </ul>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mb-4">Applications of Bubble Sort</h3>
+      <ul class="list-disc text-lg text-gray-600 mb-8 pl-6">
+        <li>Used in small datasets where the overhead of more complex algorithms (like Quick Sort or Merge Sort) is not worth it.</li>
+        <li>Helpful when the array is almost sorted or when only a few elements are out of place.</li>
+        <li>Used in educational settings to introduce students to the concept of sorting algorithms.</li>
+        <li>Can be applied in situations where the simplicity of the algorithm is more important than performance.</li>
+      </ul>
+
+      <h3 class="text-2xl font-semibold text-gray-800 mb-4">Bubble Sort Example</h3>
+      <div class="bg-gray-100 p-4 rounded-lg text-lg text-gray-600">
+        <p>Consider the array: <code>[5, 3, 8, 4, 2]</code></p>
+        <p>After each pass, the largest element "bubbles up" to its correct position:</p>
+        <ul class="list-disc pl-6">
+          <li>Pass 1: <code>[3, 5, 4, 2, 8]</code> (8 bubbles to the end)</li>
+          <li>Pass 2: <code>[3, 4, 2, 5, 8]</code> (5 bubbles to its position)</li>
+          <li>Pass 3: <code>[3, 2, 4, 5, 8]</code> (4 is in its position)</li>
+          <li>Pass 4: <code>[2, 3, 4, 5, 8]</code> (Array is sorted)</li>
+        </ul>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer Section -->
+  <footer class="bg-gray-800 text-white p-6">
+    <div class="max-w-screen-xl mx-auto text-center">
+      <p>&copy; 2025 AlgoVisual | All rights reserved</p>
+    </div>
+  </footer>
+
+</body>
+</html>
