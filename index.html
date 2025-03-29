@@ -5,99 +5,148 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Algorithm Visualizations</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Highlight the active menu item */
+    .active-menu-item {
+      background-color: #2563eb; /* Blue-600 */
+      color: white;
+    }
+
+    /* Customize menu box styling */
+    .menu-box {
+      background-color: #60a5fa; /* Light Blue-400 */
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Menu item styles */
+    .menu-item {
+      background-color: #60a5fa; /* Light Blue-400 */
+      padding: 12px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+      border: 1px solid #2563eb; /* Border to create separation */
+      margin-bottom: 12px; /* Adds space between the dialogue boxes */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds slight shadow */
+    }
+
+    .menu-item:hover {
+      background-color: #2563eb; /* Blue-600 */
+      color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds shadow on hover */
+    }
+
+    /* Active menu item style */
+    .menu-item.active-menu-item {
+      background-color: #2563eb; /* Blue-600 */
+      color: white;
+    }
+  </style>
 </head>
 <body class="bg-gray-100 font-sans">
 
   <!-- Header Section -->
   <header class="bg-blue-600 text-white p-6">
-    <div class="max-w-screen-xl mx-auto flex justify-between items-center">
-      <h1 class="text-4xl font-bold">AlgoVisual</h1>
-      <nav class="flex space-x-6 text-lg">
-        <a href="index.html" class="hover:text-yellow-400">Home</a> <!-- Link to the main page -->
-        <a href="bubble-sort.html" class="hover:text-yellow-400">Bubble Sort</a> <!-- Link to bubble-sort.html -->
-        <a href="quick-sort.html" class="hover:text-yellow-400">Quick Sort</a> <!-- Link to quick-sort.html -->
-        <a href="merge-sort.html" class="hover:text-yellow-400">Merge Sort</a> <!-- Link to merge-sort.html -->
-        <a href="insertion-sort.html" class="hover:text-yellow-400">Insertion Sort</a> <!-- Link to insertion-sort.html -->
-        <a href="selection-sort.html" class="hover:text-yellow-400">Selection Sort</a> <!-- Link to selection-sort.html -->
-        <a href="heap-sort.html" class="hover:text-yellow-400">Heap Sort</a> <!-- Link to heap-sort.html -->
-        <a href="radix-sort.html" class="hover:text-yellow-400">Radix Sort</a> <!-- Link to radix-sort.html -->
-        <a href="shell-sort.html" class="hover:text-yellow-400">Shell Sort</a> <!-- Link to shell-sort.html -->
-      </nav>
+    <div class="max-w-screen-xl mx-auto flex items-center justify-between">
+      <!-- AlgoVisual Centered Header -->
+      <h1 class="text-5xl sm:text-7xl font-bold text-center mx-auto">AlgoVisual</h1>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="py-12">
-    <section class="max-w-screen-xl mx-auto px-6 text-center">
-      <h2 class="text-3xl font-semibold text-gray-800 mb-6">Welcome to Algorithm Visualizations</h2>
-      <p class="text-lg text-gray-600 mb-8">
-        Learn and visualize different algorithms with interactive step-by-step guides.
-      </p>
+  <main class="py-12 relative">
+    <section class="max-w-screen-xl mx-auto px-6 flex flex-wrap">
+      <!-- Menu Box (Extreme left below the title) -->
+      <div class="w-full sm:w-64 menu-box sm:absolute sm:top-20 sm:left-5 mb-6 sm:mb-0">
+        <h3 class="text-2xl font-bold mb-4">Theory</h3> <!-- Changed Menu to Theory -->
+        <ul class="space-y-4">
+          <li><a href="#bubble-sort" class="block menu-item">Bubble Sort</a></li>
+          <li><a href="#quick-sort" class="block menu-item">Quick Sort</a></li>
+          <li><a href="#merge-sort" class="block menu-item">Merge Sort</a></li>
+          <li><a href="#insertion-sort" class="block menu-item">Insertion Sort</a></li>
+          <li><a href="#selection-sort" class="block menu-item">Selection Sort</a></li>
+          <li><a href="#heap-sort" class="block menu-item">Heap Sort</a></li>
+          <li><a href="#radix-sort" class="block menu-item">Radix Sort</a></li>
+          <li><a href="#shell-sort" class="block menu-item">Shell Sort</a></li>
+        </ul>
+      </div>
 
-      <!-- Featured Algorithms -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white p-6 shadow-lg rounded-lg">
-          <h3 class="text-xl font-bold text-blue-600 mb-4">Bubble Sort</h3>
-          <p class="text-gray-700 mb-4">Watch the Bubble Sort algorithm sort an array step by step.</p>
-          <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Bubble.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Visualize Bubble Sort
-          </a>
-        </div>
+      <!-- Main Content (Algorithm Cards) -->
+      <div class="w-full sm:w-3/4 sm:ml-64 sm:pl-6">
+        <h2 class="text-3xl sm:text-4xl font-semibold text-gray-800 mb-6 text-center">Welcome to Algorithm Visualizations</h2>
+        
+        <!-- Reduced Font Size and Adjusted Padding -->
+        <p class="text-lg sm:text-xl text-gray-600 mb-8 text-center max-w-3xl mx-auto">
+          Learn and visualize different algorithms with interactive step-by-step guides. Explore a variety of sorting algorithms and understand their working principles with live visualizations. Click on any algorithm to start visualizing it and see the process unfold step by step.
+        </p>
 
-        <div class="bg-white p-6 shadow-lg rounded-lg">
-          <h3 class="text-xl font-bold text-blue-600 mb-4">Quick Sort</h3>
-          <p class="text-gray-700 mb-4">See how Quick Sort divides and conquers to sort an array.</p>
-          <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Quick.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Visualize Quick Sort
-          </a>
-        </div>
+        <!-- Featured Algorithms -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+          <div id="bubble-sort" class="bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">Bubble Sort</h3>
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">Watch the Bubble Sort algorithm sort an array step by step.</p>
+            <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Bubble.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Visualize Bubble Sort
+            </a>
+          </div>
 
-        <div class="bg-white p-6 shadow-lg rounded-lg">
-          <h3 class="text-xl font-bold text-blue-600 mb-4">Merge Sort</h3>
-          <p class="text-gray-700 mb-4">Learn how Merge Sort splits and merges to achieve a sorted array.</p>
-          <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Merge.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Visualize Merge Sort
-          </a>
-        </div>
+          <div id="quick-sort" class="bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">Quick Sort</h3>
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">See how Quick Sort divides and conquers to sort an array.</p>
+            <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Quick.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Visualize Quick Sort
+            </a>
+          </div>
 
-        <div class="bg-white p-6 shadow-lg rounded-lg">
-          <h3 class="text-xl font-bold text-blue-600 mb-4">Insertion Sort</h3>
-          <p class="text-gray-700 mb-4">Learn how Insertion Sort builds a sorted array one element at a time.</p>
-          <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Insertion.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Visualize Insertion Sort
-          </a>
-        </div>
+          <div id="merge-sort" class="bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">Merge Sort</h3>
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">Learn how Merge Sort splits and merges to achieve a sorted array.</p>
+            <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Merge.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Visualize Merge Sort
+            </a>
+          </div>
 
-        <div class="bg-white p-6 shadow-lg rounded-lg">
-          <h3 class="text-xl font-bold text-blue-600 mb-4">Selection Sort</h3>
-          <p class="text-gray-700 mb-4">See how Selection Sort repeatedly selects the smallest element.</p>
-          <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Selection.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Visualize Selection Sort
-          </a>
-        </div>
+          <div id="insertion-sort" class="bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">Insertion Sort</h3>
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">Learn how Insertion Sort builds a sorted array one element at a time.</p>
+            <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Insertion.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Visualize Insertion Sort
+            </a>
+          </div>
 
-        <div class="bg-white p-6 shadow-lg rounded-lg">
-          <h3 class="text-xl font-bold text-blue-600 mb-4">Heap Sort</h3>
-          <p class="text-gray-700 mb-4">Watch Heap Sort build a binary heap and sort the array.</p>
-          <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Heap Sort.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Visualize Heap Sort
-          </a>
-        </div>
+          <div id="selection-sort" class="bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">Selection Sort</h3>
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">See how Selection Sort repeatedly selects the smallest element.</p>
+            <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Selection.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Visualize Selection Sort
+            </a>
+          </div>
 
-        <div class="bg-white p-6 shadow-lg rounded-lg">
-          <h3 class="text-xl font-bold text-blue-600 mb-4">Radix Sort</h3>
-          <p class="text-gray-700 mb-4">Learn how Radix Sort sorts numbers digit by digit.</p>
-          <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Radix Sort.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Visualize Radix Sort
-          </a>
-        </div>
+          <div id="heap-sort" class="bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">Heap Sort</h3>
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">Watch Heap Sort build a binary heap and sort the array.</p>
+            <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Heap Sort.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Visualize Heap Sort
+            </a>
+          </div>
 
-        <div class="bg-white p-6 shadow-lg rounded-lg">
-          <h3 class="text-xl font-bold text-blue-600 mb-4">Shell Sort</h3>
-          <p class="text-gray-700 mb-4">See how Shell Sort improves on Insertion Sort with gap sequences.</p>
-          <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Shell.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-            Visualize Shell Sort
-          </a>
+          <div id="radix-sort" class="bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">Radix Sort</h3>
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">Learn how Radix Sort sorts numbers digit by digit.</p>
+            <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Radix Sort.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Visualize Radix Sort
+            </a>
+          </div>
+
+          <div id="shell-sort" class="bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-xl sm:text-2xl font-bold text-blue-600 mb-4">Shell Sort</h3>
+            <p class="text-lg sm:text-xl text-gray-700 mb-4">See how Shell Sort improves on Insertion Sort with gap sequences.</p>
+            <a href="https://abhishekgupta-23042004.github.io/AlgorithmVisualizer/Shell.html" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+              Visualize Shell Sort
+            </a>
+          </div>
         </div>
       </div>
     </section>
@@ -109,6 +158,33 @@
       <p>&copy; 2025 AlgoVisual | All rights reserved</p>
     </div>
   </footer>
+
+  <!-- JavaScript for Dynamic Menu -->
+  <script>
+    // Function to highlight the active menu item based on scroll position
+    function highlightActiveMenuItem() {
+      const sections = document.querySelectorAll("section > div > div"); // Get all algorithm sections
+      const menuItems = document.querySelectorAll(".menu-item"); // Get all menu items
+
+      // Remove the active class from all menu items before applying it
+      menuItems.forEach((item) => item.classList.remove("active-menu-item"));
+
+      // Loop through sections to find the one in view
+      sections.forEach((section, index) => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) {
+          // Add active class to the corresponding menu item
+          menuItems[index].classList.add("active-menu-item");
+        }
+      });
+    }
+
+    // Add event listener for scroll
+    window.addEventListener("scroll", highlightActiveMenuItem);
+
+    // Call the function on page load to ensure no button is active by default
+    window.addEventListener("load", highlightActiveMenuItem);
+  </script>
 
 </body>
 </html>
