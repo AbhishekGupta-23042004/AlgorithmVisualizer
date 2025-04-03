@@ -14,11 +14,8 @@
     .array-bar {
       display: inline-block;
       width: 30px;
-      background-color: lightblue;
-      transition: height 0.3s ease-in-out;
-    }
-    .highlight {
-      background-color: red !important;
+      background-color: blue;
+      transition: height 0.2s ease-in-out;
     }
     .number-label {
       display: block;
@@ -39,7 +36,7 @@
     #result {
       margin-top: 20px;
     }
-    #explanation {
+    #current-explanation {
       margin-top: 20px;
       padding: 10px;
       background-color: #f0f0f0;
@@ -54,6 +51,9 @@
       max-height: 200px;
       overflow-y: auto;
     }
+    .current {
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -64,14 +64,6 @@
       <h1 class="text-4xl font-bold">AlgoVisual</h1>
       <nav class="flex space-x-6 text-lg">
         <a href="index.html" class="hover:text-yellow-400">Home</a>
-        <a href="bubble-sort.html" class="hover:text-yellow-400">Bubble Sort</a>
-        <a href="quick-sort.html" class="hover:text-yellow-400">Quick Sort</a>
-        <a href="merge-sort.html" class="hover:text-yellow-400">Merge Sort</a>
-        <a href="insertion-sort.html" class="hover:text-yellow-400">Insertion Sort</a>
-        <a href="selection-sort.html" class="hover:text-yellow-400">Selection Sort</a>
-        <a href="heap-sort.html" class="hover:text-yellow-400">Heap Sort</a>
-        <a href="radix-sort.html" class="hover:text-yellow-400">Radix Sort</a>
-        <a href="shell-sort.html" class="hover:text-yellow-400">Shell Sort</a>
       </nav>
     </div>
   </header>
@@ -84,14 +76,17 @@
         <h2 class="text-3xl font-semibold text-gray-800 mb-6">Insertion Sort Code</h2>
         <div id="code" class="border p-4 rounded-lg">
           <pre id="code-block">function insertionSort(arr) {
-  let n = arr.length;
-  for (let i = 1; i < n; i++) {
+  for (let i = 1; i < arr.length; i++) {
     let current = arr[i];
     let j = i - 1;
+    
+    // Move elements greater than current to one position ahead
     while (j >= 0 && arr[j] > current) {
       arr[j + 1] = arr[j];
       j--;
     }
+    
+    // Insert current at correct position
     arr[j + 1] = current;
   }
 }</pre>
@@ -113,7 +108,7 @@
         <!-- Input for array elements -->
         <div>
           <label for="array-elements" class="text-lg">Enter Array Elements (comma separated): </label>
-          <input type="text" id="array-elements" class="border p-2 rounded" placeholder="e.g., 3,1,4,2,5">
+          <input type="text" id="array-elements" class="border p-2 rounded" placeholder="e.g., 3,1,4,2,5" value="5,3,8,6,2">
         </div>
         <br>
 
@@ -127,7 +122,7 @@
 
         <!-- Explanation Boxes -->
         <div id="current-explanation" class="text-lg text-gray-800 mt-6"></div>
-        <div id="previous-explanation" class="text-lg text-gray-800 mt-6"></div> <!-- Previous Explanations -->
+        <div id="previous-explanation" class="text-lg text-gray-800 mt-6"></div>
       </div>
     </section>
   </main>
@@ -141,21 +136,28 @@
 
   <script>
     let arr = [];
-    let stepCount = 1;
-    let explanationHistory = []; // Store previous explanations
+    let stepCount = 0;
+    let explanationHistory = [];
+    let isSorting = false;
+    let timeoutIds = [];
+    const DELAY = 300; // Visualization speed
 
     // Function to display the array with bars and numbers below them
-    function displayArray() {
+    function displayArray(currentIndex = -1) {
       let container = document.getElementById("array-container");
-      container.innerHTML = ""; // Clear the container before re-rendering
+      container.innerHTML = "";
 
-      arr.forEach(num => {
+      arr.forEach((num, index) => {
         let barContainer = document.createElement("div");
         barContainer.classList.add("array-bar-container");
 
         let bar = document.createElement("div");
         bar.classList.add("array-bar");
         bar.style.height = `${num * 20}px`;
+        
+        if (index === currentIndex) {
+          bar.classList.add("current");
+        }
 
         let numberLabel = document.createElement("span");
         numberLabel.classList.add("number-label");
@@ -187,83 +189,122 @@
     // Function to add explanation to history and update UI
     function addExplanation(message) {
       explanationHistory.push(message);
-      showPreviousExplanations(); // Update previous explanations list
+      showPreviousExplanations();
+    }
+
+    // Function to clear all timeouts
+    function clearAllTimeouts() {
+      timeoutIds.forEach(id => clearTimeout(id));
+      timeoutIds = [];
+    }
+
+    // Function to reset the visualization
+    function resetVisualization() {
+      clearAllTimeouts();
+      isSorting = false;
+      explanationHistory = [];
+      stepCount = 0;
+      document.getElementById("result").innerText = '';
+      document.getElementById("current-explanation").innerHTML = '';
+      document.getElementById("previous-explanation").innerHTML = '';
     }
 
     // Function to start the insertion sort process
     function startInsertionSort() {
+      if (isSorting) {
+        alert("Sorting is already in progress!");
+        return;
+      }
+      
+      resetVisualization();
+      isSorting = true;
+
       let input = document.getElementById("array-elements").value;
       let size = parseInt(document.getElementById("array-size").value);
 
       // Parse the input array
       arr = input.split(",").map(num => parseInt(num.trim()));
 
-      if (arr.length !== size) {
-        alert("Array size doesn't match the entered elements!");
+      if (arr.some(isNaN)) {
+        alert("Please enter valid numbers!");
+        isSorting = false;
         return;
       }
 
-      // Reset the explanation section and display the initial array
-      explanationHistory = [];
-      displayArray();
-      showPreviousExplanations();
-      insertionSort(arr);
-    }
-
-    // Insertion Sort function with detailed explanation
-    function insertionSort(arr) {
-      let n = arr.length;
-
-      // Go through each step of sorting
-      for (let i = 1; i < n; i++) {
-        let current = arr[i];
-        let j = i - 1;
-
-        // Highlight the bar being compared
-        let bars = document.getElementsByClassName("array-bar");
-        bars[i].classList.add("highlight");
-
-        // Explain the comparison step
-        setTimeout(() => {
-          showCurrentExplanation(`Inserting ${current} into the sorted portion.`);
-
-          while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-
-            // Move elements larger than current to one position ahead
-            setTimeout(() => {
-              displayArray();
-              showCurrentExplanation(`Shifting ${arr[j]} to position ${j + 1}.`);
-            }, 500);
-
-            j--;
-          }
-
-          arr[j + 1] = current;
-
-          // Update the array after the insertion
-          setTimeout(() => {
-            displayArray();
-            showCurrentExplanation(`Inserted ${current} at position ${j + 1}.`);
-            addExplanation(`Inserted ${current} at position ${j + 1}.`);
-          }, 500);
-
-          // Remove highlights after each comparison
-          setTimeout(() => {
-            bars[i].classList.remove("highlight");
-          }, 1000);
-
-        }, stepCount * 1500); // Delay each step for clarity
-
-        stepCount++; // Increment step count after each comparison
+      if (arr.length !== size) {
+        alert("Array size doesn't match the entered elements!");
+        isSorting = false;
+        return;
       }
 
-      // Once sorting is complete, display the final sorted array
-      setTimeout(() => {
-        document.getElementById("result").innerText = `Sorted Array: [${arr.join(", ")}]`;
-        addExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
-        showCurrentExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
-      }, stepCount * 1500);
+      // Display initial array
+      displayArray();
+      addExplanation(`Starting insertion sort on array: [${arr.join(", ")}]`);
+      showCurrentExplanation(`Initial array: [${arr.join(", ")}]`);
+      stepCount++;
+
+      // Start the insertion sort with visualization
+      visualizeInsertionSort([...arr]).then(() => {
+        setTimeout(() => {
+          document.getElementById("result").innerText = `Sorted Array: [${arr.join(", ")}]`;
+          addExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
+          showCurrentExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
+          isSorting = false;
+        }, stepCount * DELAY);
+      });
+    }
+
+    // Insertion Sort with visualization steps
+    async function visualizeInsertionSort(array) {
+      for (let i = 1; i < array.length; i++) {
+        let current = array[i];
+        let j = i - 1;
+        
+        // Highlight the current element being inserted
+        await delay(() => {
+          showCurrentExplanation(`Processing element at index ${i}: ${current}`);
+          addExplanation(`Processing element at index ${i}: ${current}`);
+          displayArray(i);
+        });
+
+        // Find the correct position for current
+        while (j >= 0 && array[j] > current) {
+          array[j + 1] = array[j];
+          
+          // Show the shift operation
+          await delay(() => {
+            showCurrentExplanation(`Shifting element ${array[j]} from index ${j} to ${j + 1}`);
+            addExplanation(`Shifting element ${array[j]} from index ${j} to ${j + 1}`);
+            arr = [...array];
+            displayArray(j + 1);
+          });
+          
+          j--;
+        }
+
+        // Insert the current element
+        array[j + 1] = current;
+        arr = [...array];
+        
+        await delay(() => {
+          showCurrentExplanation(`Inserting ${current} at correct position ${j + 1}`);
+          addExplanation(`Inserting ${current} at correct position ${j + 1}`);
+          displayArray();
+        });
+      }
+      return array;
+    }
+
+    // Helper function for delays with visualization
+    function delay(callback) {
+      return new Promise(resolve => {
+        const id = setTimeout(() => {
+          callback();
+          stepCount++;
+          resolve();
+        }, stepCount * DELAY);
+        timeoutIds.push(id);
+      });
     }
   </script>
 
