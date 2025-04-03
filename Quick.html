@@ -10,15 +10,13 @@
       display: inline-block;
       text-align: center;
       margin: 0 5px;
+      transition: transform 0.3s ease-in-out; /* Added transition for movement */
     }
     .array-bar {
       display: inline-block;
       width: 30px;
-      background-color: lightblue;
-      transition: height 0.3s ease-in-out;
-    }
-    .highlight {
-      background-color: red !important;
+      background-color: blue;
+      transition: height 0.3s ease-in-out, transform 0.3s ease-in-out, background-color 0.3s ease-in-out; /* Smooth transitions for height change */
     }
     .number-label {
       display: block;
@@ -32,9 +30,10 @@
       border-radius: 5px;
       font-family: monospace;
       white-space: pre-wrap;
-      height: 400px;
+      height: 300px;
       overflow-y: auto;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
     }
     #result {
       margin-top: 20px;
@@ -44,6 +43,7 @@
       padding: 10px;
       background-color: #f0f0f0;
       border-radius: 5px;
+      transition: opacity 0.5s ease;
     }
     #previous-explanation {
       margin-top: 20px;
@@ -54,48 +54,54 @@
       max-height: 200px;
       overflow-y: auto;
     }
+
+    /* Hover effects */
+    .hover\:bg-blue-700:hover {
+      background-color: #3b82f6; /* Darker blue for hover */
+    }
+
+    .input-hover:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+    }
+
+    .button-hover:hover {
+      background-color: #3b82f6;
+      transition: background-color 0.3s ease;
+    }
   </style>
 </head>
 <body class="bg-gray-100 font-sans">
 
   <!-- Header Section -->
-  <header class="bg-blue-600 text-white p-6">
+  <header class="bg-blue-600 text-white p-4 md:p-6">
     <div class="max-w-screen-xl mx-auto flex justify-between items-center">
-      <h1 class="text-4xl font-bold">AlgoVisual</h1>
-      <nav class="flex space-x-6 text-lg">
+      <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold">AlgoVisual</h1>
+      <nav class="flex space-x-4 sm:space-x-6 text-lg">
         <a href="index.html" class="hover:text-yellow-400">Home</a>
-        <a href="bubble-sort.html" class="hover:text-yellow-400">Bubble Sort</a>
-        <a href="quick-sort.html" class="hover:text-yellow-400">Quick Sort</a>
-        <a href="merge-sort.html" class="hover:text-yellow-400">Merge Sort</a>
-        <a href="insertion-sort.html" class="hover:text-yellow-400">Insertion Sort</a>
-        <a href="selection-sort.html" class="hover:text-yellow-400">Selection Sort</a>
-        <a href="heap-sort.html" class="hover:text-yellow-400">Heap Sort</a>
-        <a href="radix-sort.html" class="hover:text-yellow-400">Radix Sort</a>
-        <a href="shell-sort.html" class="hover:text-yellow-400">Shell Sort</a>
       </nav>
     </div>
   </header>
 
   <!-- Main Content -->
-  <main class="py-12">
-    <section class="max-w-screen-xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12">
+  <main class="py-6 sm:py-12">
+    <section class="max-w-screen-xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
       <!-- Code Section -->
       <div class="lg:col-span-1">
-        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Quick Sort Code</h2>
-        <div id="code" class="border p-4 rounded-lg">
+        <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">Quick Sort Code</h2>
+        <div id="code" class="border p-4 rounded-lg shadow-lg">
           <pre id="code-block">function quickSort(arr, low, high) {
   if (low < high) {
     let pi = partition(arr, low, high);
-    quickSort(arr, low, pi - 1); // Before pi
-    quickSort(arr, pi + 1, high); // After pi
+    quickSort(arr, low, pi - 1); // Left part
+    quickSort(arr, pi + 1, high); // Right part
   }
 }
 
 function partition(arr, low, high) {
   let pivot = arr[high];
   let i = (low - 1);
-  
-  for (let j = low; j < high; j++) {
+  for (let j = low; j <= high - 1; j++) {
     if (arr[j] < pivot) {
       i++;
       let temp = arr[i];
@@ -113,25 +119,23 @@ function partition(arr, low, high) {
 
       <!-- Visualization Section -->
       <div class="lg:col-span-1">
-        <h2 class="text-3xl font-semibold text-gray-800 mb-6">Quick Sort Visualization</h2>
-        <p class="text-lg text-gray-600 mb-8">Enter the array elements below and watch Quick Sort sort them step by step.</p>
+        <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">Quick Sort Visualization</h2>
+        <p class="text-lg text-gray-600 mb-6">Enter the array elements below and watch Quick Sort sort them step by step.</p>
 
         <!-- Input for array size -->
-        <div>
+        <div class="mb-4">
           <label for="array-size" class="text-lg">Array Size: </label>
-          <input type="number" id="array-size" class="border p-2 rounded" min="2" max="20" value="5">
+          <input type="number" id="array-size" class="border p-2 rounded w-full sm:w-auto input-hover" min="2" max="20" value="5">
         </div>
-        <br>
 
         <!-- Input for array elements -->
-        <div>
+        <div class="mb-4">
           <label for="array-elements" class="text-lg">Enter Array Elements (comma separated): </label>
-          <input type="text" id="array-elements" class="border p-2 rounded" placeholder="e.g., 3,1,4,2,5">
+          <input type="text" id="array-elements" class="border p-2 rounded w-full sm:w-auto input-hover" placeholder="e.g., 3,1,4,2,5">
         </div>
-        <br>
 
         <!-- Start button -->
-        <button onclick="startQuickSort()" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+        <button onclick="startQuickSort()" class="bg-blue-600 text-white py-2 px-4 rounded button-hover w-full sm:w-auto">
           Start Quick Sort
         </button>
 
@@ -156,6 +160,7 @@ function partition(arr, low, high) {
     let arr = [];
     let stepCount = 1;
     let explanationHistory = []; // Store previous explanations
+    let delay = 1500; // Delay in ms between steps
 
     // Function to display the array with bars and numbers below them
     function displayArray() {
@@ -183,7 +188,7 @@ function partition(arr, low, high) {
 
     // Function to show the current explanation
     function showCurrentExplanation(message) {
-      document.getElementById("current-explanation").innerHTML = `<strong>Step ${stepCount}:</strong> ${message}`;
+      document.getElementById("current-explanation").innerHTML = message;
     }
 
     // Function to show the list of previous explanations
@@ -203,7 +208,7 @@ function partition(arr, low, high) {
       showPreviousExplanations(); // Update previous explanations list
     }
 
-    // Function to start the quick sort process
+    // Function to start the Quick Sort process
     function startQuickSort() {
       let input = document.getElementById("array-elements").value;
       let size = parseInt(document.getElementById("array-size").value);
@@ -220,6 +225,7 @@ function partition(arr, low, high) {
       explanationHistory = [];
       displayArray();
       showPreviousExplanations();
+      document.getElementById("result").innerText = ""; // Clear the previous result
       quickSort(arr, 0, arr.length - 1);
     }
 
@@ -227,27 +233,34 @@ function partition(arr, low, high) {
     function quickSort(arr, low, high) {
       if (low < high) {
         let pi = partition(arr, low, high);
+        setTimeout(() => {
+          quickSort(arr, low, pi - 1); // Left part
+        }, delay);
 
         setTimeout(() => {
-          addExplanation(`Pivot is ${arr[pi]} at index ${pi}`);
-          showCurrentExplanation(`Pivot is ${arr[pi]} at index ${pi}`);
-          displayArray();
-        }, stepCount * 1500);
+          quickSort(arr, pi + 1, high); // Right part
+        }, delay * 2);
+      } else {
+        // Array is fully sorted
+        setTimeout(() => {
+          document.getElementById("result").innerText = `Sorted Array: [${arr.join(", ")}]`;
+          addExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
 
-        stepCount++;
-
-        quickSort(arr, low, pi - 1); // Before pivot
-        quickSort(arr, pi + 1, high); // After pivot
+          // Show explanation without stepCount increment
+          showCurrentExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
+        }, delay * 3);
       }
     }
 
-    // Partition function with detailed explanation
     function partition(arr, low, high) {
       let pivot = arr[high];
-      let i = low - 1;
+      let i = (low - 1);
+      let bars = document.getElementsByClassName("array-bar");
 
-      for (let j = low; j < high; j++) {
-        let bars = document.getElementsByClassName("array-bar");
+      for (let j = low; j <= high - 1; j++) {
+        setTimeout(() => {
+          showCurrentExplanation(`Comparing ${arr[j]} and pivot ${pivot}`);
+        }, delay * j);
 
         if (arr[j] < pivot) {
           i++;
@@ -255,22 +268,21 @@ function partition(arr, low, high) {
           arr[i] = arr[j];
           arr[j] = temp;
 
-          // Highlight the bars being swapped
           setTimeout(() => {
-            bars[i].classList.add("highlight");
-            bars[j].classList.add("highlight");
-            addExplanation(`Swapping ${arr[i]} and ${arr[j]}`);
-            showCurrentExplanation(`Swapping ${arr[i]} and ${arr[j]}`);
+            addExplanation(`Swapped ${arr[i]} and ${arr[j]}.`);
             displayArray();
-          }, stepCount * 1500);
-
-          stepCount++;
+          }, delay * (j + 1));
         }
       }
 
       let temp = arr[i + 1];
       arr[i + 1] = arr[high];
       arr[high] = temp;
+
+      setTimeout(() => {
+        addExplanation(`Pivot ${pivot} placed at index ${i + 1}.`);
+        displayArray();
+      }, delay * (high + 1));
 
       return i + 1;
     }
