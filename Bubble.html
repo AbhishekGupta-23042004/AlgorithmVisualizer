@@ -14,11 +14,8 @@
     .array-bar {
       display: inline-block;
       width: 30px;
-      background-color: lightblue;
+      background-color: blue; /* Bars will always be blue */
       transition: height 0.3s ease-in-out;
-    }
-    .highlight {
-      background-color: red !important;
     }
     .number-label {
       display: block;
@@ -63,15 +60,7 @@
     <div class="max-w-screen-xl mx-auto flex justify-between items-center">
       <h1 class="text-4xl font-bold">AlgoVisual</h1>
       <nav class="flex space-x-6 text-lg">
-        <a href="index.html" class="hover:text-yellow-400">Home</a>
-        <a href="bubble-sort.html" class="hover:text-yellow-400">Bubble Sort</a>
-        <a href="quick-sort.html" class="hover:text-yellow-400">Quick Sort</a>
-        <a href="merge-sort.html" class="hover:text-yellow-400">Merge Sort</a>
-        <a href="insertion-sort.html" class="hover:text-yellow-400">Insertion Sort</a>
-        <a href="selection-sort.html" class="hover:text-yellow-400">Selection Sort</a>
-        <a href="heap-sort.html" class="hover:text-yellow-400">Heap Sort</a>
-        <a href="radix-sort.html" class="hover:text-yellow-400">Radix Sort</a>
-        <a href="shell-sort.html" class="hover:text-yellow-400">Shell Sort</a>
+        <a href="index.html" class="hover:text-yellow-400">Home</a> <!-- Only Home link -->
       </nav>
     </div>
   </header>
@@ -192,6 +181,13 @@
 
     // Function to start the bubble sort process
     function startBubbleSort() {
+      // Clear previous explanations and result
+      explanationHistory = [];
+      stepCount = 1;
+      document.getElementById("result").innerText = '';
+      document.getElementById("current-explanation").innerHTML = '';
+      document.getElementById("previous-explanation").innerHTML = '';
+
       let input = document.getElementById("array-elements").value;
       let size = parseInt(document.getElementById("array-size").value);
 
@@ -204,7 +200,6 @@
       }
 
       // Reset the explanation section and display the initial array
-      explanationHistory = [];
       displayArray();
       showPreviousExplanations();
       bubbleSort(arr);
@@ -217,11 +212,6 @@
       // Go through each step of sorting
       for (let i = 0; i < n - 1; i++) {
         for (let j = 0; j < n - i - 1; j++) {
-          let bars = document.getElementsByClassName("array-bar");
-
-          // Highlight the bars being compared
-          bars[j].classList.add("highlight");
-          bars[j + 1].classList.add("highlight");
 
           // Explain the comparison step
           setTimeout(() => {
@@ -248,11 +238,8 @@
               }, 500);
             }
 
-            // Remove highlights after each comparison
-            setTimeout(() => {
-              bars[j].classList.remove("highlight");
-              bars[j + 1].classList.remove("highlight");
-            }, 1000);
+            // Update the array visualization after the comparison and swap (if any)
+            displayArray();
 
           }, stepCount * 1500); // Delay each step for clarity
 
