@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -14,11 +14,8 @@
     .array-bar {
       display: inline-block;
       width: 30px;
-      background-color: lightblue;
-      transition: height 0.3s ease-in-out;
-    }
-    .highlight {
-      background-color: red !important;
+      background-color: blue;
+      transition: height 0.2s ease-in-out;
     }
     .number-label {
       display: block;
@@ -39,7 +36,7 @@
     #result {
       margin-top: 20px;
     }
-    #explanation {
+    #current-explanation {
       margin-top: 20px;
       padding: 10px;
       background-color: #f0f0f0;
@@ -54,6 +51,14 @@
       max-height: 200px;
       overflow-y: auto;
     }
+    .current {
+      opacity: 0.7;
+    }
+    .heap-node {
+      position: relative;
+      display: inline-block;
+      margin: 10px;
+    }
   </style>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -64,14 +69,6 @@
       <h1 class="text-4xl font-bold">AlgoVisual</h1>
       <nav class="flex space-x-6 text-lg">
         <a href="index.html" class="hover:text-yellow-400">Home</a>
-        <a href="bubble-sort.html" class="hover:text-yellow-400">Bubble Sort</a>
-        <a href="quick-sort.html" class="hover:text-yellow-400">Quick Sort</a>
-        <a href="merge-sort.html" class="hover:text-yellow-400">Merge Sort</a>
-        <a href="insertion-sort.html" class="hover:text-yellow-400">Insertion Sort</a>
-        <a href="selection-sort.html" class="hover:text-yellow-400">Selection Sort</a>
-        <a href="heap-sort.html" class="hover:text-yellow-400">Heap Sort</a>
-        <a href="radix-sort.html" class="hover:text-yellow-400">Radix Sort</a>
-        <a href="shell-sort.html" class="hover:text-yellow-400">Shell Sort</a>
       </nav>
     </div>
   </header>
@@ -84,44 +81,29 @@
         <h2 class="text-3xl font-semibold text-gray-800 mb-6">Heap Sort Code</h2>
         <div id="code" class="border p-4 rounded-lg">
           <pre id="code-block">function heapSort(arr) {
-  let n = arr.length;
-
-  // Build a max heap
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
-  }
-
-  // One by one extract elements from heap
-  for (let i = n - 1; i >= 1; i--) {
-    // Move current root to end
-    let temp = arr[0];
-    arr[0] = arr[i];
-    arr[i] = temp;
-
-    // Call heapify on the reduced heap
+  buildMaxHeap(arr);
+  for (let i = arr.length - 1; i > 0; i--) {
+    [arr[0], arr[i]] = [arr[i], arr[0]];
     heapify(arr, i, 0);
   }
 }
 
-// To heapify a subtree with root at index i
+function buildMaxHeap(arr) {
+  for (let i = Math.floor(arr.length / 2) - 1; i >= 0; i--) {
+    heapify(arr, arr.length, i);
+  }
+}
+
 function heapify(arr, n, i) {
   let largest = i;
-  let left = 2 * i + 1;
-  let right = 2 * i + 2;
+  const left = 2 * i + 1;
+  const right = 2 * i + 2;
 
-  if (left < n && arr[left] > arr[largest]) {
-    largest = left;
-  }
-
-  if (right < n && arr[right] > arr[largest]) {
-    largest = right;
-  }
-
+  if (left < n && arr[left] > arr[largest]) largest = left;
+  if (right < n && arr[right] > arr[largest]) largest = right;
+  
   if (largest !== i) {
-    let temp = arr[i];
-    arr[i] = arr[largest];
-    arr[largest] = temp;
-
+    [arr[i], arr[largest]] = [arr[largest], arr[i]];
     heapify(arr, n, largest);
   }
 }</pre>
@@ -143,7 +125,7 @@ function heapify(arr, n, i) {
         <!-- Input for array elements -->
         <div>
           <label for="array-elements" class="text-lg">Enter Array Elements (comma separated): </label>
-          <input type="text" id="array-elements" class="border p-2 rounded" placeholder="e.g., 3,1,4,2,5">
+          <input type="text" id="array-elements" class="border p-2 rounded" placeholder="e.g., 3,1,4,2,5" value="5,3,8,6,2">
         </div>
         <br>
 
@@ -153,11 +135,12 @@ function heapify(arr, n, i) {
         </button>
 
         <div id="array-container" class="mt-6 mb-6"></div>
+        <div id="heap-container" class="mt-6 mb-6"></div>
         <div id="result" class="text-xl font-semibold text-gray-800 mt-6"></div>
 
         <!-- Explanation Boxes -->
         <div id="current-explanation" class="text-lg text-gray-800 mt-6"></div>
-        <div id="previous-explanation" class="text-lg text-gray-800 mt-6"></div> <!-- Previous Explanations -->
+        <div id="previous-explanation" class="text-lg text-gray-800 mt-6"></div>
       </div>
     </section>
   </main>
@@ -171,141 +154,277 @@ function heapify(arr, n, i) {
 
   <script>
     let arr = [];
-    let stepCount = 1;
-    let explanationHistory = []; // Store previous explanations
+    let stepCount = 0;
+    let explanationHistory = [];
+    let isSorting = false;
+    let timeoutIds = [];
+    const DELAY = 200; // Fast visualization speed
+    const SKIP_STEPS = 1; // Skip some steps for faster visualization
 
-    // Function to display the array with bars and numbers below them
-    function displayArray() {
-      let container = document.getElementById("array-container");
-      container.innerHTML = ""; // Clear the container before re-rendering
+    function displayArray(currentIndices = []) {
+      const container = document.getElementById("array-container");
+      container.innerHTML = "";
 
-      arr.forEach(num => {
-        let barContainer = document.createElement("div");
+      arr.forEach((num, index) => {
+        const barContainer = document.createElement("div");
         barContainer.classList.add("array-bar-container");
 
-        let bar = document.createElement("div");
+        const bar = document.createElement("div");
         bar.classList.add("array-bar");
         bar.style.height = `${num * 20}px`;
+        if (currentIndices.includes(index)) bar.classList.add("current");
 
-        let numberLabel = document.createElement("span");
+        const numberLabel = document.createElement("span");
         numberLabel.classList.add("number-label");
-        numberLabel.innerText = num;
+        numberLabel.textContent = num;
 
         barContainer.appendChild(bar);
         barContainer.appendChild(numberLabel);
-
         container.appendChild(barContainer);
       });
     }
 
-    // Function to show the current explanation
+    function displayHeap(currentIndices = []) {
+      const container = document.getElementById("heap-container");
+      container.innerHTML = "";
+      if (arr.length === 0) return;
+
+      const levels = Math.ceil(Math.log2(arr.length + 1));
+      let index = 0;
+
+      for (let level = 0; level < levels; level++) {
+        const levelContainer = document.createElement("div");
+        levelContainer.style.textAlign = "center";
+        levelContainer.style.marginBottom = "20px";
+
+        const nodesInLevel = Math.pow(2, level);
+        for (let i = 0; i < nodesInLevel && index < arr.length; i++) {
+          const node = document.createElement("div");
+          node.classList.add("heap-node");
+
+          const value = document.createElement("div");
+          value.style.width = "40px";
+          value.style.height = "40px";
+          value.style.lineHeight = "40px";
+          value.style.borderRadius = "50%";
+          value.style.backgroundColor = "blue";
+          value.style.color = "white";
+          value.style.display = "inline-block";
+          value.style.margin = "0 10px";
+          if (currentIndices.includes(index)) value.style.opacity = "0.7";
+          value.textContent = arr[index];
+          node.appendChild(value);
+
+          if (level > 0) {
+            const lineContainer = document.createElement("div");
+            lineContainer.style.position = "relative";
+            lineContainer.style.height = "20px";
+
+            const leftChild = 2 * (index - (Math.pow(2, level) - 1)) + 1;
+            const rightChild = leftChild + 1;
+
+            if (leftChild < arr.length) {
+              const leftLine = document.createElement("div");
+              leftLine.style.position = "absolute";
+              leftLine.style.width = "50%";
+              leftLine.style.height = "2px";
+              leftLine.style.backgroundColor = "black";
+              leftLine.style.left = "50%";
+              leftLine.style.top = "0";
+              leftLine.style.transform = "rotate(-30deg)";
+              leftLine.style.transformOrigin = "left center";
+              lineContainer.appendChild(leftLine);
+            }
+
+            if (rightChild < arr.length) {
+              const rightLine = document.createElement("div");
+              rightLine.style.position = "absolute";
+              rightLine.style.width = "50%";
+              rightLine.style.height = "2px";
+              rightLine.style.backgroundColor = "black";
+              rightLine.style.right = "50%";
+              rightLine.style.top = "0";
+              rightLine.style.transform = "rotate(30deg)";
+              rightLine.style.transformOrigin = "right center";
+              lineContainer.appendChild(rightLine);
+            }
+
+            node.appendChild(lineContainer);
+          }
+
+          levelContainer.appendChild(node);
+          index++;
+        }
+        container.appendChild(levelContainer);
+      }
+    }
+
     function showCurrentExplanation(message) {
       document.getElementById("current-explanation").innerHTML = `<strong>Step ${stepCount}:</strong> ${message}`;
     }
 
-    // Function to show the list of previous explanations
     function showPreviousExplanations() {
-      const prevExplanationsContainer = document.getElementById("previous-explanation");
-      prevExplanationsContainer.innerHTML = "<strong>Previous Steps:</strong>";
+      const container = document.getElementById("previous-explanation");
+      container.innerHTML = "<strong>Previous Steps:</strong>";
       explanationHistory.forEach((explanation, index) => {
         const p = document.createElement("p");
         p.innerHTML = `<strong>Step ${index + 1}:</strong> ${explanation}`;
-        prevExplanationsContainer.appendChild(p);
+        container.appendChild(p);
       });
     }
 
-    // Function to add explanation to history and update UI
     function addExplanation(message) {
-      explanationHistory.push(message);
-      showPreviousExplanations(); // Update previous explanations list
+      if (stepCount % SKIP_STEPS === 0 || message.includes("completed")) {
+        explanationHistory.push(message);
+        showPreviousExplanations();
+      }
     }
 
-    // Function to start the heap sort process
-    function startHeapSort() {
-      let input = document.getElementById("array-elements").value;
-      let size = parseInt(document.getElementById("array-size").value);
+    function clearAllTimeouts() {
+      timeoutIds.forEach(id => clearTimeout(id));
+      timeoutIds = [];
+    }
 
-      // Parse the input array
+    function resetVisualization() {
+      clearAllTimeouts();
+      isSorting = false;
+      explanationHistory = [];
+      stepCount = 0;
+      document.getElementById("result").textContent = '';
+      document.getElementById("current-explanation").innerHTML = '';
+      document.getElementById("previous-explanation").innerHTML = '';
+      document.getElementById("heap-container").innerHTML = '';
+    }
+
+    function startHeapSort() {
+      if (isSorting) {
+        alert("Sorting is already in progress!");
+        return;
+      }
+      
+      resetVisualization();
+      isSorting = true;
+
+      const input = document.getElementById("array-elements").value;
+      const size = parseInt(document.getElementById("array-size").value);
+
       arr = input.split(",").map(num => parseInt(num.trim()));
 
-      if (arr.length !== size) {
-        alert("Array size doesn't match the entered elements!");
+      if (arr.some(isNaN)) {
+        alert("Please enter valid numbers!");
+        isSorting = false;
         return;
       }
 
-      // Reset the explanation section and display the initial array
-      explanationHistory = [];
+      if (arr.length !== size) {
+        alert("Array size doesn't match the entered elements!");
+        isSorting = false;
+        return;
+      }
+
       displayArray();
-      showPreviousExplanations();
-      heapSort(arr);
-    }
+      displayHeap();
+      addExplanation(`Starting heap sort on array: [${arr.join(", ")}]`);
+      showCurrentExplanation(`Initial array: [${arr.join(", ")}]`);
+      stepCount++;
 
-    // Heap Sort function with detailed explanation
-    function heapSort(arr) {
-      let n = arr.length;
-
-      // Build a max heap
-      for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-      }
-
-      // One by one extract elements from heap
-      for (let i = n - 1; i >= 1; i--) {
-        // Move current root to end
-        let temp = arr[0];
-        arr[0] = arr[i];
-        arr[i] = temp;
-
+      visualizeHeapSort([...arr]).then(() => {
         setTimeout(() => {
-          displayArray();
-          showCurrentExplanation(`Swapped root with element at index ${i}.`);
-          addExplanation(`Swapped root with element at index ${i}.`);
-        }, stepCount * 1500);
-
-        stepCount++;
-
-        heapify(arr, i, 0);
-      }
-
-      // Once sorting is complete, display the final sorted array
-      setTimeout(() => {
-        document.getElementById("result").innerText = `Sorted Array: [${arr.join(", ")}]`;
-        addExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
-        showCurrentExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
-      }, stepCount * 1500);
+          document.getElementById("result").textContent = `Sorted Array: [${arr.join(", ")}]`;
+          addExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
+          showCurrentExplanation(`Sorting completed! Final sorted array: [${arr.join(", ")}]`);
+          isSorting = false;
+        }, stepCount * DELAY);
+      });
     }
 
-    // Heapify function to maintain the max heap property
-    function heapify(arr, n, i) {
-      let largest = i;
-      let left = 2 * i + 1;
-      let right = 2 * i + 2;
+    async function visualizeHeapSort(array) {
+      await buildMaxHeap(array);
+      
+      for (let i = array.length - 1; i > 0; i--) {
+        [array[0], array[i]] = [array[i], array[0]];
+        arr = [...array];
+        
+        await delay(() => {
+          showCurrentExplanation(`Swapped root (${array[i]}) with last element (${array[0]})`);
+          addExplanation(`Swapped root (${array[i]}) with last element (${array[0]})`);
+          displayArray([0, i]);
+          displayHeap([0, i]);
+        });
+        
+        await heapify(array, i, 0);
+      }
+      return array;
+    }
 
-      if (left < n && arr[left] > arr[largest]) {
-        largest = left;
+    async function buildMaxHeap(array) {
+      for (let i = Math.floor(array.length / 2) - 1; i >= 0; i--) {
+        if (i % SKIP_STEPS === 0 || i < 3) {
+          await delay(() => {
+            showCurrentExplanation(`Building max heap at index ${i}`);
+            addExplanation(`Building max heap at index ${i}`);
+            displayArray([i]);
+            displayHeap([i]);
+          });
+        }
+        await heapify(array, array.length, i);
+      }
+    }
+
+    async function heapify(array, n, i) {
+      let largest = i;
+      const left = 2 * i + 1;
+      const right = 2 * i + 2;
+
+      if (left < n) {
+        if (stepCount % SKIP_STEPS === 0) {
+          await delay(() => {
+            showCurrentExplanation(`Comparing ${array[i]} (${i}) with left child ${array[left]} (${left})`);
+            addExplanation(`Comparing ${array[i]} (${i}) with left child ${array[left]} (${left})`);
+            displayArray([i, left]);
+            displayHeap([i, left]);
+          });
+        }
+        if (array[left] > array[largest]) largest = left;
       }
 
-      if (right < n && arr[right] > arr[largest]) {
-        largest = right;
+      if (right < n) {
+        if (stepCount % SKIP_STEPS === 0) {
+          await delay(() => {
+            showCurrentExplanation(`Comparing ${array[largest]} (${largest}) with right child ${array[right]} (${right})`);
+            addExplanation(`Comparing ${array[largest]} (${largest}) with right child ${array[right]} (${right})`);
+            displayArray([largest, right]);
+            displayHeap([largest, right]);
+          });
+        }
+        if (array[right] > array[largest]) largest = right;
       }
 
       if (largest !== i) {
-        let temp = arr[i];
-        arr[i] = arr[largest];
-        arr[largest] = temp;
-
-        setTimeout(() => {
-          displayArray();
-          showCurrentExplanation(`Swapped ${arr[i]} and ${arr[largest]}`);
-          addExplanation(`Swapped ${arr[i]} and ${arr[largest]}`);
-        }, stepCount * 1500);
-
-        stepCount++;
-
-        heapify(arr, n, largest);
+        [array[i], array[largest]] = [array[largest], array[i]];
+        arr = [...array];
+        
+        await delay(() => {
+          showCurrentExplanation(`Swapped ${array[largest]} (${i}) with ${array[i]} (${largest})`);
+          addExplanation(`Swapped ${array[largest]} (${i}) with ${array[i]} (${largest})`);
+          displayArray([i, largest]);
+          displayHeap([i, largest]);
+        });
+        
+        await heapify(array, n, largest);
       }
     }
-  </script>
 
+    function delay(callback) {
+      return new Promise(resolve => {
+        const id = setTimeout(() => {
+          callback();
+          stepCount++;
+          resolve();
+        }, stepCount * DELAY);
+        timeoutIds.push(id);
+      });
+    }
+  </script>
 </body>
 </html>
